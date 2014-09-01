@@ -3,10 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SnackBar.iml" filepath="$PROJECT_DIR$/SnackBar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Snackbar.iml" filepath="$PROJECT_DIR$/Snackbar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../code.iml" filepath="$PROJECT_DIR$/../code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../codeDownload.iml" filepath="$PROJECT_DIR$/../codeDownload.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/snackbar/snackbar.iml" filepath="$PROJECT_DIR$/snackbar/snackbar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/snackBarLibrary/snackBarLibrary.iml" filepath="$PROJECT_DIR$/snackBarLibrary/snackBarLibrary.iml" />
     </modules>
   </component>
 </project>
