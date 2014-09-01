@@ -23,4 +23,5 @@ local.properties
 proguard/
 
 #IntelliJ
-.idea/workspace.xml
+.idea/*
+*.iml
