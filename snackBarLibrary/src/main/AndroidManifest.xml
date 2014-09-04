@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mrengineer13.snackbar">
+    package="com.sahildave.snackbar">
+
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" android:maxSdkVersion="19"/>
 
     <application android:allowBackup="true"
         android:label="@string/app_name"

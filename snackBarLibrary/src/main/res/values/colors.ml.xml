@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="sb__snack_bkgnd">#323232</color>
+    <color name="usb_container_background">#66323232</color>
+    <color name="usb_background">#F8F8F8</color>
+    <color name="usb_padding">#7F7F7F</color>
 </resources>

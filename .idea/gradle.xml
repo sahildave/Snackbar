@@ -20,7 +20,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/sample" />
-            <option value="$PROJECT_DIR$/snackbar" />
+            <option value="$PROJECT_DIR$/snackBarLibrary" />
           </set>
         </option>
       </GradleProjectSettings>

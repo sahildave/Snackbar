@@ -13,28 +13,22 @@
  * limitations under the License.
  */
 
-package com.mrengineer13.snackbar.sample;
+package com.sahildave.snackbar.sample;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.mrengineer13.snackbar.SnackBar;
+import com.sahildave.snackbar.SnackBar;
 
 
 public class SnackBarActivity extends ActionBarActivity {
 
     public static final String SAVED_SNACKBAR = "SAVED_SNACKBAR";
-
     public static final String SAVED_COUNT = "SAVED_COUNT";
 
-    private String[] mSnackNames;
 
     private int mSnackIndex = 0;
-
     private SnackBar mSnackBar;
 
     @Override
@@ -42,43 +36,22 @@ public class SnackBarActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snack_bar);
 
-        mSnackNames = getResources().getStringArray(R.array.snack_names);
-        mSnackBar = new SnackBar(this);
-    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.snack_bar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onSnackClicked(View v){
-        mSnackBar.show(mSnackNames[mSnackIndex++ % mSnackNames.length], SnackBar.MED_SNACK);
+        mSnackBar = new SnackBar(this, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.show("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE);
     }
 
-    public void onPourSyrupClicked(View v){
-        mSnackBar.show(String.format(getString(R.string.syrup_added), mSnackNames[mSnackIndex++ % mSnackNames.length].toLowerCase()), getString(R.string.undo), SnackBar.Style.INFO);
-        mSnackBar.setOnClickListener(new SnackBar.OnMessageClickListener() {
-            @Override
-            public void onMessageClick(Parcelable token) {
-                mSnackBar.clear();
-                mSnackBar.show(getString(R.string.crisis_averted));
-            }
-        });
+    public void addSnack(View v){
+        mSnackBar = new SnackBar(this, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.show("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mSnackBar.onBackPressedHandler();
     }
 
     @Override

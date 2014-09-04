@@ -2,6 +2,10 @@
 <resources>
 
     <item name="snackContainer" type="id" />
+    <item name="snackCard" type="id" />
     <item name="snackMessage" type="id" />
-    <item name="snackButton" type="id" />
+    <item name="snackSubMessage" type="id" />
+    <item name="snackIcon" type="id" />
+    <item name="snackPositiveButton" type="id" />
+    <item name="snackNegativeButton" type="id" />
 </resources>
