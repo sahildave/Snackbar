@@ -18,57 +18,41 @@ package com.sahildave.snackbar.sample;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-
 import com.sahildave.snackbar.SnackBar;
 
 
 public class SnackBarActivity extends ActionBarActivity {
 
-    public static final String SAVED_SNACKBAR = "SAVED_SNACKBAR";
-    public static final String SAVED_COUNT = "SAVED_COUNT";
-
-
-    private int mSnackIndex = 0;
     private SnackBar mSnackBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snack_bar);
-
-
+        mSnackBar = new SnackBar(this);
     }
 
-    public void onSnackClicked(View v){
-        mSnackBar = new SnackBar(this, SnackBar.SnackBarType.SINGLELINE);
+    public void addCall(View v){
         mSnackBar.show("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE);
     }
 
-    public void addSnack(View v){
-        mSnackBar = new SnackBar(this, SnackBar.SnackBarType.SINGLELINE);
+    public void addEmail(View v){
         mSnackBar.show("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE);
     }
 
-    @Override
-    public void onBackPressed() {
-        mSnackBar.onBackPressedHandler();
+    public void addMap(View v){
+        mSnackBar.show("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle saveState) {
-        super.onSaveInstanceState(saveState);
-        // use this to save your snacks for later
-        saveState.putBundle(SAVED_SNACKBAR, mSnackBar.onSaveInstanceState());
-        // just for saving the number of times the button has been pressed
-        saveState.putInt(SAVED_COUNT, mSnackIndex);
+    public void addInfo(View v){
+        mSnackBar.show("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle loadState) {
-        super.onRestoreInstanceState(loadState);
-        // use this to load your snacks for later
-        mSnackBar.onRestoreInstanceState(loadState.getBundle(SAVED_SNACKBAR));
-        // might as well load the counter too
-        mSnackIndex = loadState.getInt(SAVED_COUNT);
+    public void addAll(View v){
+        mSnackBar.show("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.show("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.show("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.show("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE);
     }
+
 }

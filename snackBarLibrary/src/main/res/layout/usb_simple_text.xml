@@ -1,41 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@id/snackContainer"
-        style="@style/SnackBar.Container">
+        android:id="@+id/snackCard"
+        style="@style/SnackBar.Card">
 
-    <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@id/snackCard"
-            style="@style/SnackBar.Card">
+    <ImageView
+            android:id="@+id/snackIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="24dp"
+            android:src="@drawable/question"/>
 
-        <ImageView
-                android:id="@id/snackIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginRight="24dp"
-                android:src="@drawable/question"/>
+    <TextView
+            android:id="@+id/snackMessage"
+            android:text="More Info at "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/snackIcon"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
-        <TextView
-                android:id="@id/snackMessage"
-                android:text="More Info at "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/snackIcon"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-        <TextView
-                android:id="@id/snackSubMessage"
-                android:text="www.hdfcbank.com/customer-support"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:layout_toRightOf="@id/snackIcon"
-                android:layout_below="@id/snackMessage"
-                android:paddingTop="8dp"
-                android:textSize="14sp"
-                android:autoLink="all"/>
-    </RelativeLayout>
-</LinearLayout>
+    <TextView
+            android:id="@+id/snackSubMessage"
+            android:text="www.hdfcbank.com/customer-support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_toRightOf="@id/snackIcon"
+            android:layout_below="@id/snackMessage"
+            android:paddingTop="8dp"
+            android:textSize="14sp"
+            android:autoLink="all"/>
+</RelativeLayout>
