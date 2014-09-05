@@ -1,0 +1,74 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/snackCard"
+        android:paddingBottom="0dp"
+        style="@style/SnackBar.Card">
+
+
+
+    <ImageView
+            android:id="@id/snackIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="24dp"
+            android:src="@drawable/question"/>
+
+    <TextView
+            android:id="@id/snackMessage"
+            android:text="@string/forgot_cid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/snackIcon"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="8dp"
+            android:textSize="14sp" />
+
+    <View
+            android:id="@+id/hzDivider"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/snackMessage"
+            android:layout_marginTop="16dp"
+            android:layout_alignLeft="@id/snackMessage"/>
+
+    <LinearLayout
+            android:id="@+id/snackButtonPanel"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:layout_alignLeft="@id/snackMessage"
+            android:layout_below="@id/hzDivider">
+
+        <Button
+                android:id="@id/snackPositiveButton"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="left|center_vertical"
+                android:textSize="12sp"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/yes_button_states"
+                android:drawablePadding="8dp"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/black"
+                android:text="YES"/>
+
+        <Button
+                android:id="@id/snackNegativeButton"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="left|center_vertical"
+                android:textSize="12sp"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/no_button_states"
+                android:drawablePadding="8dp"
+                android:textColor="@android:color/black"
+                android:fontFamily="sans-serif"
+                android:text="NO"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

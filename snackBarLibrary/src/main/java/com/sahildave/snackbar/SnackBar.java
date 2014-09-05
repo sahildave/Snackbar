@@ -17,14 +17,22 @@ package com.sahildave.snackbar;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SnackBar {
 
@@ -33,10 +41,21 @@ public class SnackBar {
     private static final String LOG_TAG = "SnackBar";
     private final ViewGroup snackbarListContainer;
     private final LinearLayout rootLayout;
+    private final SnackBarListener snackBarListener;
+    private GestureDetectorCompat mGestureDetector;
     private Activity activity;
 
     private AnimationSet mOutAnimationSet;
     private AnimationSet mInAnimationSet;
+
+    private List<View> currentSnacks;
+
+    public interface SnackBarListener{
+
+        void positiveButtonClicked();
+
+        void negativeButtonClicked();
+    }
 
 
     public SnackBar(Activity activity) {
@@ -44,18 +63,31 @@ public class SnackBar {
         ViewGroup rootContainer = (ViewGroup) activity.findViewById(android.R.id.content);
         snackbarListContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, rootContainer);
         rootLayout = (LinearLayout)snackbarListContainer.findViewById(R.id.snackListContainer);
+        snackBarListener = (SnackBarListener) activity;
+        currentSnacks = new ArrayList<View>();
+        setupFlingToDismiss();
     }
 
-    public void show(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
+    private void setupFlingToDismiss() {
+        mGestureDetector = new GestureDetectorCompat(activity, new GestureListener());
+        rootLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
+    }
 
-        if(snackBarType==SnackBarType.SINGLELINE){
+    public void showSingleLineInfo(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
+
+        if(snackBarType==SnackBarType.SINGLELINE_INFO){
             addSingleLineSnack(message, subMessage, messageType);
         }
 
     }
 
     private void addSingleLineSnack(String message, String subMessage, MessageType messageType) {
-        View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text, null);
+        View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text_info, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
         TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
         ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
@@ -72,7 +104,66 @@ public class SnackBar {
         v.setLayoutParams(params);
         v.setTag(messageType);
         v.setAnimation(getEntryAnimation());
+        addToView(v);
+    }
+
+    public void showSingleLineAction(String message, String positiveText, String negativeText, SnackBarType snackBarType) {
+
+        if(snackBarType == SnackBarType.SINGLELINE_ACTION){
+            addSingleLineAction(message, positiveText, negativeText);
+        }
+    }
+
+    private void addSingleLineAction(String message, String positiveText, String negativeText) {
+        View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text_action, null);
+        TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
+        Button mSnackPositiveButton = (Button) v.findViewById(R.id.snackPositiveButton);
+        Button mSnackNegativeButton = (Button) v.findViewById(R.id.snackNegativeButton);
+
+        mSnackMsgView.setText(message);
+        mSnackPositiveButton.setText(positiveText);
+        mSnackNegativeButton.setText(negativeText);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(24, 12, 24, 12);
+        v.setLayoutParams(params);
+        v.setAnimation(getEntryAnimation());
+        addToView(v);
+
+        mSnackPositiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootLayout.startAnimation(getExitAnimation());
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        rootLayout.clearAnimation();
+                        for(View v: currentSnacks){
+                            rootLayout.removeView(v);
+                        }
+                        Log.e(LOG_TAG, "Size of current "+currentSnacks.size());
+                        currentSnacks.clear();
+                        Log.e(LOG_TAG, "Size of current "+currentSnacks.size());
+                        snackBarListener.positiveButtonClicked();
+                    }
+                }, OUT_ANIMATION_DURATION);
+            }
+        });
+
+        mSnackNegativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackBarListener.negativeButtonClicked();
+            }
+        });
+
+    }
+
+    private void addToView(View v) {
         rootLayout.addView(v, 0);
+        currentSnacks.add(v);
     }
 
     private int getSnackIcon(MessageType messageType) {
@@ -100,12 +191,13 @@ public class SnackBar {
     public void onBackPressedHandler() {
         if(rootLayout.getChildCount()>0){
             removeSnacks();
+            currentSnacks.clear();
         } else {
             activity.finish();
         }
     }
 
-    private void removeSnacks() {
+    public void removeSnacks() {
         rootLayout.startAnimation(getExitAnimation());
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -115,7 +207,6 @@ public class SnackBar {
         }, OUT_ANIMATION_DURATION);
     }
 
-
     public enum MessageType {
         PHONE,
         EMAIL,
@@ -124,7 +215,8 @@ public class SnackBar {
     }
 
     public enum SnackBarType {
-        SINGLELINE,
+        SINGLELINE_INFO,
+        SINGLELINE_ACTION,
         MULTILINE,
         CONTAINER
     }
@@ -173,5 +265,21 @@ public class SnackBar {
         mOutAnimationSet.setDuration(OUT_ANIMATION_DURATION);
 
         return  mOutAnimationSet;
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+            if (event2.getY() > event1.getY()) {
+                removeSnacks();
+            }
+            return true;
+        }
     }
 }

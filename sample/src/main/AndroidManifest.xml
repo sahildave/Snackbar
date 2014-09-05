@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sahildave.snackbar.sample" >
 
-    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" android:maxSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="19" android:maxSdkVersion="19"/>
 
     <application
         android:allowBackup="true"

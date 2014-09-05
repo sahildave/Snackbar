@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Snackbar</string>
+    <string name="forgot_cid">Seems like you have forgotten your customer ID. Would you like some help?</string>
 </resources>

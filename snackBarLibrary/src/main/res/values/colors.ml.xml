@@ -2,5 +2,6 @@
 <resources>
     <color name="usb_container_background">#66323232</color>
     <color name="usb_background">#F8F8F8</color>
+    <color name="usb_background_shadow">#F8F8F8</color>
     <color name="usb_padding">#7F7F7F</color>
 </resources>

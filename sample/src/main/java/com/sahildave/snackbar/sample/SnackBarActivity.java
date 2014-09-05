@@ -21,7 +21,7 @@ import android.view.View;
 import com.sahildave.snackbar.SnackBar;
 
 
-public class SnackBarActivity extends ActionBarActivity {
+public class SnackBarActivity extends ActionBarActivity implements SnackBar.SnackBarListener {
 
     private SnackBar mSnackBar;
 
@@ -33,30 +33,50 @@ public class SnackBarActivity extends ActionBarActivity {
     }
 
     public void addCall(View v){
-        mSnackBar.show("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addEmail(View v){
-        mSnackBar.show("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addMap(View v){
-        mSnackBar.show("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.showSingleLineInfo("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addInfo(View v){
-        mSnackBar.show("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
+    }
+
+    public void addAction(View v){
+        mSnackBar.showSingleLineAction("Seems like you have forgotten your customer ID. Would you like some help?",
+                "Yes",
+                "No",
+                SnackBar.SnackBarType.SINGLELINE_ACTION);
+
     }
 
     public void addAll(View v){
-        mSnackBar.show("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE);
-        mSnackBar.show("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE);
-        mSnackBar.show("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE);
-        mSnackBar.show("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE);
+        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     @Override
     public void onBackPressed() {
         mSnackBar.onBackPressedHandler();
+    }
+
+    @Override
+    public void positiveButtonClicked() {
+        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
+    }
+
+    @Override
+    public void negativeButtonClicked() {
+        mSnackBar.removeSnacks();
     }
 }
