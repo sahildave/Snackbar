@@ -16,6 +16,7 @@
 package com.sahildave.snackbar;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -31,6 +32,7 @@ public class SnackBar {
     private static final int OUT_ANIMATION_DURATION = 250;
     private static final String LOG_TAG = "SnackBar";
     private final ViewGroup snackbarListContainer;
+    private final LinearLayout rootLayout;
     private Activity activity;
 
     private AnimationSet mOutAnimationSet;
@@ -41,33 +43,36 @@ public class SnackBar {
         this.activity = activity;
         ViewGroup rootContainer = (ViewGroup) activity.findViewById(android.R.id.content);
         snackbarListContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, rootContainer);
+        rootLayout = (LinearLayout)snackbarListContainer.findViewById(R.id.snackListContainer);
     }
 
     public void show(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
 
         if(snackBarType==SnackBarType.SINGLELINE){
-            //Views
-            View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text, null);
-            TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
-            TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
-            ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
-
-            mSnackMsgView.setText(message);
-            mSnackSubMsgView.setText(subMessage);
-            mSnackIcon.setImageResource(getSnackIcon(messageType));
-
-            LinearLayout rootLayout = (LinearLayout)snackbarListContainer.findViewById(R.id.snackListContainer);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(24,12,24,12);
-            v.setLayoutParams(params);
-            v.setTag(messageType);
-            v.setAnimation(getEntryAnimation());
-            rootLayout.addView(v, 0);
+            addSingleLineSnack(message, subMessage, messageType);
         }
 
+    }
+
+    private void addSingleLineSnack(String message, String subMessage, MessageType messageType) {
+        View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text, null);
+        TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
+        TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
+        ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
+
+        mSnackMsgView.setText(message);
+        mSnackSubMsgView.setText(subMessage);
+        mSnackIcon.setImageResource(getSnackIcon(messageType));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(24,12,24,12);
+        v.setLayoutParams(params);
+        v.setTag(messageType);
+        v.setAnimation(getEntryAnimation());
+        rootLayout.addView(v, 0);
     }
 
     private int getSnackIcon(MessageType messageType) {
@@ -90,6 +95,24 @@ public class SnackBar {
                 break;
         }
         return snackIcon;
+    }
+
+    public void onBackPressedHandler() {
+        if(rootLayout.getChildCount()>0){
+            removeSnacks();
+        } else {
+            activity.finish();
+        }
+    }
+
+    private void removeSnacks() {
+        rootLayout.startAnimation(getExitAnimation());
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                rootLayout.clearAnimation();
+                rootLayout.removeAllViews();
+            }
+        }, OUT_ANIMATION_DURATION);
     }
 
 
@@ -115,8 +138,10 @@ public class SnackBar {
                 TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
                 TranslateAnimation.RELATIVE_TO_SELF, 1.0f,
                 TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
+        mSlideInAnimation.setFillAfter(true);
 
         AlphaAnimation mFadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
+        mFadeInAnimation.setFillAfter(true);
 
         mInAnimationSet.addAnimation(mSlideInAnimation);
         mInAnimationSet.addAnimation(mFadeInAnimation);
@@ -137,7 +162,10 @@ public class SnackBar {
                 TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
                 TranslateAnimation.RELATIVE_TO_SELF, 1.0f);
 
+        mSlideOutAnimation.setFillAfter(true);
+
         AlphaAnimation mFadeOutAnimation = new AlphaAnimation(1.0f, 0.0f);
+        mFadeOutAnimation.setFillAfter(true);
 
         mOutAnimationSet.addAnimation(mSlideOutAnimation);
         mOutAnimationSet.addAnimation(mFadeOutAnimation);

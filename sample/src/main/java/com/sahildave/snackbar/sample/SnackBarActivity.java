@@ -55,4 +55,8 @@ public class SnackBarActivity extends ActionBarActivity {
         mSnackBar.show("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE);
     }
 
+    @Override
+    public void onBackPressed() {
+        mSnackBar.onBackPressedHandler();
+    }
 }
