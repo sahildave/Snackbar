@@ -26,10 +26,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +52,8 @@ public class SnackBar {
         void positiveButtonClicked();
 
         void negativeButtonClicked();
+
+        void radioButtonClicked(MessageType messageType);
     }
 
 
@@ -107,20 +106,22 @@ public class SnackBar {
         addToView(v);
     }
 
-    public void showSingleLineAction(String message, String positiveText, String negativeText, SnackBarType snackBarType) {
+    public void showSingleLineAction(String message, String positiveText, String negativeText, MessageType messageType, SnackBarType snackBarType) {
 
         if(snackBarType == SnackBarType.SINGLELINE_ACTION){
-            addSingleLineAction(message, positiveText, negativeText);
+            addSingleLineAction(message, positiveText, negativeText, messageType);
         }
     }
 
-    private void addSingleLineAction(String message, String positiveText, String negativeText) {
+    private void addSingleLineAction(String message, String positiveText, String negativeText, MessageType messageType) {
         View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text_action, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
+        ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
         Button mSnackPositiveButton = (Button) v.findViewById(R.id.snackPositiveButton);
         Button mSnackNegativeButton = (Button) v.findViewById(R.id.snackNegativeButton);
 
         mSnackMsgView.setText(message);
+        mSnackIcon.setImageResource(getSnackIcon(messageType));
         mSnackPositiveButton.setText(positiveText);
         mSnackNegativeButton.setText(negativeText);
 
@@ -161,6 +162,55 @@ public class SnackBar {
 
     }
 
+    public void showSingleLineOption(String message, String subMessage, MessageType messageType, SnackBarType snackBarType) {
+
+        if(snackBarType == SnackBarType.SINGLELINE_OPTION){
+            addSingleLineOption(message, subMessage, messageType);
+        }
+    }
+
+    private void addSingleLineOption(String message, String subMessage, MessageType messageType) {
+        final View v = activity.getLayoutInflater().inflate(R.layout.usb_simple_text_option, null);
+        TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
+        TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
+        ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
+        RadioButton mSnackRadio = (RadioButton) v.findViewById(R.id.snackRadio);
+
+        mSnackMsgView.setText(message);
+        mSnackSubMsgView.setText(subMessage);
+        mSnackIcon.setImageResource(getSnackIcon(messageType));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(24,12,24,12);
+        v.setLayoutParams(params);
+        v.setTag(messageType);
+        v.setAnimation(getEntryAnimation());
+        addToView(v);
+
+        mSnackRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                rootLayout.startAnimation(getExitAnimation());
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        rootLayout.clearAnimation();
+                        for(View v: currentSnacks){
+                            rootLayout.removeView(v);
+                        }
+                        currentSnacks.clear();
+                        snackBarListener.radioButtonClicked((MessageType) v.getTag());
+                    }
+                }, OUT_ANIMATION_DURATION);
+
+            }
+       });
+    }
+
+
     private void addToView(View v) {
         rootLayout.addView(v, 0);
         currentSnacks.add(v);
@@ -180,6 +230,15 @@ public class SnackBar {
                 break;
             case MAP:
                 snackIcon = R.drawable.map;
+                break;
+            case MESSAGE:
+                snackIcon = R.drawable.message;
+                break;
+            case CHEQUE:
+                snackIcon = R.drawable.cheque;
+                break;
+            case ACCOUNT_STATEMENT:
+                snackIcon = R.drawable.account_statement;
                 break;
             default:
                 snackIcon = R.drawable.question;
@@ -211,12 +270,17 @@ public class SnackBar {
         PHONE,
         EMAIL,
         WEB,
-        MAP
+        MAP,
+        MESSAGE,
+        CHEQUE,
+        ACCOUNT_STATEMENT,
+        PASS_BOOK
     }
 
     public enum SnackBarType {
         SINGLELINE_INFO,
         SINGLELINE_ACTION,
+        SINGLELINE_OPTION,
         MULTILINE,
         CONTAINER
     }

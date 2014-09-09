@@ -8,4 +8,5 @@
     <item name="snackIcon" type="id" />
     <item name="snackPositiveButton" type="id" />
     <item name="snackNegativeButton" type="id" />
+    <item name="snackRadio" type="id" />
 </resources>

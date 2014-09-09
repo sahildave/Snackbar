@@ -18,6 +18,7 @@ package com.sahildave.snackbar.sample;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.Toast;
 import com.sahildave.snackbar.SnackBar;
 
 
@@ -31,6 +32,11 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
         setContentView(R.layout.activity_snack_bar);
         mSnackBar = new SnackBar(this);
     }
+
+
+    //Single Info - showSingleLineInfo
+    //Single Action - showSingleLineAction
+    //Single Option - showSingleLineOption
 
     public void addCall(View v){
         mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
@@ -52,8 +58,8 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
         mSnackBar.showSingleLineAction("Seems like you have forgotten your customer ID. Would you like some help?",
                 "Yes",
                 "No",
+                SnackBar.MessageType.MESSAGE,
                 SnackBar.SnackBarType.SINGLELINE_ACTION);
-
     }
 
     public void addAll(View v){
@@ -70,13 +76,23 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
 
     @Override
     public void positiveButtonClicked() {
-        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
-        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
-        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
+
+        mSnackBar.showSingleLineOption("Check Customer Id at", "Cheque Book", SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.SINGLELINE_OPTION);
+        mSnackBar.showSingleLineOption("Check Customer Id at", "Account Statement", SnackBar.MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.SINGLELINE_OPTION);
+
     }
 
     @Override
     public void negativeButtonClicked() {
         mSnackBar.removeSnacks();
+    }
+
+    @Override
+    public void radioButtonClicked(SnackBar.MessageType messageType) {
+        Toast.makeText(this, messageType.toString(), Toast.LENGTH_SHORT).show();
+
+        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 }
