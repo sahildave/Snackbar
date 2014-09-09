@@ -1,6 +1,6 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/snackCard"
+        android:id="@id/snackCard"
         android:orientation="horizontal"
         style="@style/SnackBar.Card">
 

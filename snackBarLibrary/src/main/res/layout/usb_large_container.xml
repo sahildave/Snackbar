@@ -1,0 +1,60 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/snackCard"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        style="@style/SnackBar.Card">
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <!-- Redundant view which keeps the snackbar size correct-->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
+
+        <WebView
+                android:id="@id/snackWebview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@id/snackCard"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@id/snackIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginRight="24dp"
+                android:src="@drawable/message"/>
+
+        <TextView
+                android:id="@id/snackMessage"
+                android:text="Live Help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/snackIcon"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+        <TextView
+                android:id="@id/snackSubMessage"
+                android:text="Step 1: Do this"
+                android:layout_toRightOf="@id/snackIcon"
+                android:layout_below="@id/snackMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:textSize="14sp"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:id="@+id/snackListContainer"
+        android:orientation="vertical"
         android:minHeight="48dp"
-        android:fillViewport="true">
-    <LinearLayout
-            android:id="@+id/snackListContainer"
-            android:orientation="vertical"
-            android:layout_marginBottom="6dp"
-            style="@style/SnackBar.Container">
-    </LinearLayout>
-
-</ScrollView>
+        android:layout_marginBottom="6dp"
+        style="@style/SnackBar.Container">
+</LinearLayout>

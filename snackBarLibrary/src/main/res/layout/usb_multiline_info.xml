@@ -1,0 +1,31 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/snackCard"
+        style="@style/SnackBar.Card">
+
+    <ImageView
+            android:id="@id/snackIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="24dp"
+            android:src="@drawable/message"/>
+
+    <TextView
+            android:id="@id/snackMessage"
+            android:text="On your chequebook customer id is at: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/snackIcon"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    <TextView
+            android:id="@id/snackSubMessage"
+            android:text="Next to blah blah\nWith this thing\nHello"
+            android:layout_toRightOf="@id/snackIcon"
+            android:layout_below="@id/snackMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:textSize="14sp"/>
+</RelativeLayout>

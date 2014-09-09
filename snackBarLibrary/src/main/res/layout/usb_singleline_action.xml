@@ -1,6 +1,6 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/snackCard"
+        android:id="@id/snackCard"
         android:paddingBottom="0dp"
         style="@style/SnackBar.Card">
 

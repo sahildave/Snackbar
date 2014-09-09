@@ -3,6 +3,7 @@
     package="com.sahildave.snackbar.sample" >
 
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="19" android:maxSdkVersion="19"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
