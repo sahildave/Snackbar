@@ -205,14 +205,18 @@ public class SnackBar {
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         Log.d(LOG_TAG, "Clicked - "+i);
+
+                        int childId = radioGroup.getCheckedRadioButtonId();
+                        RadioButton rb = (RadioButton) radioGroup.findViewById(childId);
+                        MessageType returnMessagetype = (MessageType)rb.getTag();
+
                         rootLayout.clearAnimation();
                         //TODO: Can be used for something like removeAllButThis(View v)
                         for(View v: currentSnacks){
                             rootLayout.removeView(v);
                         }
                         currentSnacks.clear();
-                        RadioButton rb = (RadioButton) radioGroup.getChildAt(i-1);
-                        snackBarListener.radioButtonClicked((MessageType) rb.getTag());
+                        snackBarListener.radioButtonClicked(returnMessagetype);
                     }
                 }, OUT_ANIMATION_DURATION);
             }
