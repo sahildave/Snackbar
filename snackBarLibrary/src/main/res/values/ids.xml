@@ -8,7 +8,7 @@
     <item name="snackIcon" type="id" />
     <item name="snackPositiveButton" type="id" />
     <item name="snackNegativeButton" type="id" />
-    <item name="snackRadio" type="id" />
+    <item name="snackRadioGroup" type="id" />
     <item name="snackMultiLineList" type="id"/>
     <item name="snackLoading" type="id" />
     <item name="snackWebview" type="id" />

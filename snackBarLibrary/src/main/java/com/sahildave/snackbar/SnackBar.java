@@ -26,8 +26,6 @@ import android.view.*;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.*;
@@ -166,23 +164,29 @@ public class SnackBar {
 
     }
 
-    public void showSingleLineOption(String message, String subMessage, MessageType messageType, SnackBarType snackBarType) {
+    public void showSingleLineOption(String message, List<SnackOption> snackOptionList, SnackBarType snackBarType) {
 
         if(snackBarType == SnackBarType.SINGLELINE_OPTION){
-            addSingleLineOption(message, subMessage, messageType);
+            addSingleLineOption(message, snackOptionList);
         }
     }
 
-    private void addSingleLineOption(String message, String subMessage, MessageType messageType) {
+    private void addSingleLineOption(String message, List<SnackOption> snackOptionList) {
         final View v = activity.getLayoutInflater().inflate(R.layout.usb_singleline_option, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
-        TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
-        ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
-        RadioButton mSnackRadio = (RadioButton) v.findViewById(R.id.snackRadio);
+        RadioGroup mSnackRadioGroup = (RadioGroup) v.findViewById(R.id.snackRadioGroup);
+
+        for(SnackOption option: snackOptionList){
+            Log.d(LOG_TAG, "Adding - "+option.getTitle()+", "+option.getMessageType());
+            RadioButton rb = new RadioButton(activity);
+            rb.setText(option.getTitle());
+            rb.setTag(option.getMessageType());
+            rb.setGravity(Gravity.CENTER);
+
+            mSnackRadioGroup.addView(rb);
+        }
 
         mSnackMsgView.setText(message);
-        mSnackSubMsgView.setText(subMessage);
-        mSnackIcon.setImageResource(getSnackIcon(messageType));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -190,29 +194,30 @@ public class SnackBar {
         );
         params.setMargins(24,12,24,12);
         v.setLayoutParams(params);
-        v.setTag(messageType);
         v.setAnimation(getEntryAnimation());
         addToView(v);
 
-        mSnackRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
+        mSnackRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
                 rootLayout.startAnimation(getExitAnimation());
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
+                        Log.d(LOG_TAG, "Clicked - "+i);
                         rootLayout.clearAnimation();
                         //TODO: Can be used for something like removeAllButThis(View v)
                         for(View v: currentSnacks){
                             rootLayout.removeView(v);
                         }
                         currentSnacks.clear();
-                        snackBarListener.radioButtonClicked((MessageType) v.getTag());
+                        RadioButton rb = (RadioButton) radioGroup.getChildAt(i-1);
+                        snackBarListener.radioButtonClicked((MessageType) rb.getTag());
                     }
                 }, OUT_ANIMATION_DURATION);
-
             }
-       });
+        });
+
     }
 
     public void showMultiLineInfo (String message, String[] subMessageArray, MessageType messageType, SnackBarType snackBarType){
@@ -443,4 +448,35 @@ public class SnackBar {
             return true;
         }
     }
+
+
+    public static class SnackOption{
+        MessageType messageType;
+        String title;
+
+        public SnackOption(String title, MessageType messageType){
+            setMessageType(messageType);
+            setTitle(title);
+            Log.d(LOG_TAG, "Constructor Option - "+title+", of messagetype - "+messageType.toString());
+
+        }
+
+        public MessageType getMessageType() {
+            return messageType;
+        }
+
+        public void setMessageType(MessageType messageType) {
+            this.messageType = messageType;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+    }
+
 }

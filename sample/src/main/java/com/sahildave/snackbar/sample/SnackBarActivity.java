@@ -21,6 +21,9 @@ import android.view.View;
 import android.widget.Toast;
 import com.sahildave.snackbar.SnackBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SnackBarActivity extends ActionBarActivity implements SnackBar.SnackBarListener {
 
@@ -83,8 +86,15 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
 
     @Override
     public void positiveButtonClicked() {
-        mSnackBar.showSingleLineOption("Check Customer Id at", "Cheque Book", SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.SINGLELINE_OPTION);
-        mSnackBar.showSingleLineOption("Check Customer Id at", "Account Statement", SnackBar.MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.SINGLELINE_OPTION);
+
+        List<SnackBar.SnackOption> snackOptionList = new ArrayList<SnackBar.SnackOption>();
+        snackOptionList.add(new SnackBar.SnackOption("Passbook",SnackBar.MessageType.PASS_BOOK));
+        snackOptionList.add(new SnackBar.SnackOption("Cheque Book",SnackBar.MessageType.CHEQUE));
+
+        mSnackBar.showSingleLineOption("Check Customer Id at", snackOptionList, SnackBar.SnackBarType.SINGLELINE_OPTION);
+
+//        mSnackBar.showSingleLineOption("Check Customer Id at", "Cheque Book", SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.SINGLELINE_OPTION);
+//        mSnackBar.showSingleLineOption("Check Customer Id at", "Account Statement", SnackBar.MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.SINGLELINE_OPTION);
     }
 
     @Override
@@ -94,7 +104,10 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
 
     @Override
     public void radioButtonClicked(SnackBar.MessageType messageType) {
-        View v = mSnackBar.showLargeContainer(SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.LARGE_CONTAINER, "http://www.hdfcbank.com");
+
+        Toast.makeText(this, messageType.toString(), Toast.LENGTH_SHORT).show();
+
+        View v = mSnackBar.showLargeContainer(messageType, SnackBar.SnackBarType.LARGE_CONTAINER, "http://www.hdfcbank.com");
 
         String[] messageArray = {"Step 1", "Step 2", "Step 3"};
         String message = "Live Help";
