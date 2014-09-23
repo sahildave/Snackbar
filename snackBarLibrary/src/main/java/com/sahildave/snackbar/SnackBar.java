@@ -22,35 +22,40 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
 import android.util.Log;
-import android.view.*;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class SnackBar {
 
     private static final int IN_ANIMATION_DURATION = 150;
-    private static final int OUT_ANIMATION_DURATION = 250;
+    private static final int OUT_ANIMATION_DURATION = 150;
     private static final String LOG_TAG = "SnackBar";
-    private final ViewGroup snackbarListContainer;
     private final LinearLayout rootLayout;
     private final SnackBarListener snackBarListener;
-    private final ViewGroup rootContainer;
+    private final Stack<List<View>> allSnacks;
     private GestureDetectorCompat mGestureDetector;
     private Activity activity;
 
     private AnimationSet mOutAnimationSet;
     private AnimationSet mInAnimationSet;
 
-    private List<View> currentSnacks;
+    private List<View> currentSnackList;
 
     public interface SnackBarListener{
 
@@ -59,16 +64,23 @@ public class SnackBar {
         void negativeButtonClicked();
 
         void radioButtonClicked(MessageType messageType);
+
+        void backButtonClicked();
+
+        void moreHelpButtonClicked();
     }
 
 
     public SnackBar(Activity activity) {
         this.activity = activity;
-        rootContainer = (ViewGroup) activity.findViewById(android.R.id.content);
-        snackbarListContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, rootContainer);
-        rootLayout = (LinearLayout)snackbarListContainer.findViewById(R.id.snackListContainer);
+        ViewGroup rootContainer = (ViewGroup) activity.findViewById(android.R.id.content);
+        ViewGroup snackbarListContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, rootContainer);
+        rootLayout = (LinearLayout) snackbarListContainer.findViewById(R.id.snackListContainer);
         snackBarListener = (SnackBarListener) activity;
-        currentSnacks = new ArrayList<View>();
+        currentSnackList = new ArrayList<View>();
+
+        allSnacks = new Stack<List<View>>();
+
         setupFlingToDismiss();
     }
 
@@ -82,12 +94,18 @@ public class SnackBar {
         });
     }
 
-    public void showSingleLineInfo(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
+    /*
+            SINGLELINES
+     */
 
+    public void showSingleLineSnack(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
         if(snackBarType==SnackBarType.SINGLELINE_INFO){
             addSingleLineInfo(message, subMessage, messageType);
+        } else if(snackBarType == SnackBarType.SINGLELINE_ACTION){
+            addSingleLineAction(message, messageType);
+        } else if(snackBarType == SnackBarType.SINGLELINE_FOOTER){
+            addSingleLineFooter(message);
         }
-
     }
 
     private void addSingleLineInfo(String message, String subMessage, MessageType messageType) {
@@ -98,7 +116,7 @@ public class SnackBar {
 
         mSnackMsgView.setText(message);
         mSnackSubMsgView.setText(subMessage);
-        mSnackIcon.setImageResource(getSnackIcon(messageType));
+        setSnackIcon(messageType, mSnackIcon);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -111,14 +129,7 @@ public class SnackBar {
         addToView(v);
     }
 
-    public void showSingleLineAction(String message, String positiveText, String negativeText, MessageType messageType, SnackBarType snackBarType) {
-
-        if(snackBarType == SnackBarType.SINGLELINE_ACTION){
-            addSingleLineAction(message, positiveText, negativeText, messageType);
-        }
-    }
-
-    private void addSingleLineAction(String message, String positiveText, String negativeText, MessageType messageType) {
+    private void addSingleLineAction(String message, MessageType messageType) {
         View v = activity.getLayoutInflater().inflate(R.layout.usb_singleline_action, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
         ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
@@ -126,9 +137,7 @@ public class SnackBar {
         Button mSnackNegativeButton = (Button) v.findViewById(R.id.snackNegativeButton);
 
         mSnackMsgView.setText(message);
-        mSnackIcon.setImageResource(getSnackIcon(messageType));
-        mSnackPositiveButton.setText(positiveText);
-        mSnackNegativeButton.setText(negativeText);
+        setSnackIcon(messageType, mSnackIcon);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -144,13 +153,14 @@ public class SnackBar {
             @Override
             public void onClick(View view) {
                 rootLayout.startAnimation(getExitAnimation());
+                updateAllSnackArray();
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         rootLayout.clearAnimation();
-                        for(View v: currentSnacks){
+                        for(View v: currentSnackList){
                             rootLayout.removeView(v);
                         }
-                        currentSnacks.clear();
+                        currentSnackList = new ArrayList<View>();
                         snackBarListener.positiveButtonClicked();
                     }
                 }, OUT_ANIMATION_DURATION);
@@ -166,23 +176,87 @@ public class SnackBar {
 
     }
 
-    public void showSingleLineOption(String message, String subMessage, MessageType messageType, SnackBarType snackBarType) {
+    private void addSingleLineFooter(String message) {
+        View v = activity.getLayoutInflater().inflate(R.layout.usb_singleline_footer, null);
+        TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
+        Button mSnackBackButton = (Button) v.findViewById(R.id.snackBackButton);
+        Button mSnackMoreHelpButton = (Button) v.findViewById(R.id.snackMoreHelp);
 
-        if(snackBarType == SnackBarType.SINGLELINE_OPTION){
-            addSingleLineOption(message, subMessage, messageType);
+        mSnackMsgView.setText(message);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(24, 12, 24, 12);
+        v.setLayoutParams(params);
+        v.setAnimation(getEntryAnimation());
+//        v.setTag("Password"); //TODO: Add a tagging system
+        addToView(v);
+
+        mSnackMoreHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootLayout.startAnimation(getExitAnimation());
+                updateAllSnackArray();
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        rootLayout.clearAnimation();
+                        for(View v: currentSnackList){
+                            rootLayout.removeView(v);
+                        }
+                        currentSnackList = new ArrayList<View>();
+                        snackBarListener.moreHelpButtonClicked();
+                    }
+                }, OUT_ANIMATION_DURATION);
+            }
+        });
+
+        mSnackBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPreviousSnacks();
+            }
+        });
+
+    }
+
+
+    /*
+        MULTILINES
+    */
+
+    public void showMultiLineSnack(String message, String[] subMessageArray, MessageType messageType, SnackBarType snackBarType){
+        if(snackBarType==SnackBarType.MULTILINE_INFO){
+            addMultiLineInfo(message, subMessageArray, messageType);
+        } else if(snackBarType == SnackBarType.MULTILINE_OPTION){
+            addMultiLineOption(message, subMessageArray, messageType);
         }
     }
 
-    private void addSingleLineOption(String message, String subMessage, MessageType messageType) {
-        final View v = activity.getLayoutInflater().inflate(R.layout.usb_singleline_option, null);
+    private void addMultiLineOption(String message, String[] subMessageArray, MessageType messageType) {
+        final View v = activity.getLayoutInflater().inflate(R.layout.usb_multiline_option, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
         TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
-        ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
-        RadioButton mSnackRadio = (RadioButton) v.findViewById(R.id.snackRadio);
+        Button mSnackIcon = (Button) v.findViewById(R.id.snackIcon);
+
+        CharSequence subMessage = getBulletSpanMessage(subMessageArray);
 
         mSnackMsgView.setText(message);
         mSnackSubMsgView.setText(subMessage);
-        mSnackIcon.setImageResource(getSnackIcon(messageType));
+
+        if(messageType == MessageType.NO_PHOTO){
+            View divider = v.findViewById(R.id.snackDivider);
+            divider.setVisibility(View.GONE);
+            mSnackIcon.setVisibility(View.GONE);
+        }
+
+        mSnackIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(LOG_TAG, "Stack - "+allSnacks.toString());
+            }
+        });
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -194,36 +268,9 @@ public class SnackBar {
         v.setAnimation(getEntryAnimation());
         addToView(v);
 
-        mSnackRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                rootLayout.startAnimation(getExitAnimation());
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        rootLayout.clearAnimation();
-                        //TODO: Can be used for something like removeAllButThis(View v)
-                        for(View v: currentSnacks){
-                            rootLayout.removeView(v);
-                        }
-                        currentSnacks.clear();
-                        snackBarListener.radioButtonClicked((MessageType) v.getTag());
-                    }
-                }, OUT_ANIMATION_DURATION);
-
-            }
-       });
     }
 
-    public void showMultiLineInfo (String message, String[] subMessageArray, MessageType messageType, SnackBarType snackBarType){
-
-        if(snackBarType==SnackBarType.MULTILINE_INFO){
-            addMultiLineIfo(message, subMessageArray, messageType);
-        }
-
-    }
-
-    private void addMultiLineIfo(String message, String[] subMessageArray, MessageType messageType) {
+    private void addMultiLineInfo(String message, String[] subMessageArray, MessageType messageType) {
 
         View v = activity.getLayoutInflater().inflate(R.layout.usb_multiline_info, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
@@ -231,9 +278,10 @@ public class SnackBar {
         ImageView mSnackIcon = (ImageView) v.findViewById(R.id.snackIcon);
 
         mSnackMsgView.setText(message);
-        mSnackIcon.setImageResource(getSnackIcon(messageType));
 
-        CharSequence subMessage = getMultiLineInstructions(subMessageArray);
+        setSnackIcon(messageType, mSnackIcon);
+
+        CharSequence subMessage = getBulletSpanMessage(subMessageArray);
         mSnackSubMsgView.setText(subMessage.subSequence(0, subMessage.length()-1)); //to remove extra new line char
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -246,6 +294,10 @@ public class SnackBar {
         v.setAnimation(getEntryAnimation());
         addToView(v);
     }
+
+    /*
+        CONTAINERS
+     */
 
     //TODO: Change to ViewStub
     public View showLargeContainer (MessageType messageType, SnackBarType snackBarType, String url){
@@ -289,13 +341,47 @@ public class SnackBar {
         TextView mSnackMsgView = (TextView) snackView.findViewById(R.id.snackMessage);
 
         mSnackMsgView.setText(message);
-        CharSequence subMessage = getMultiLineInstructions(subMessageArray);
-        mSnackSubMsgView.setText(subMessage.subSequence(0, subMessage.length()-1)); //to remove extra new line char
-
-
+        CharSequence subMessage = getBulletSpanMessage(subMessageArray);
+        mSnackSubMsgView.setText(subMessage.subSequence(0, subMessage.length() - 1)); //to remove extra new line char
     }
 
-    private CharSequence getMultiLineInstructions(String[] subMessageArray) {
+    /*
+        UTILS
+     */
+
+    private void showPreviousSnacks() {
+        rootLayout.startAnimation(getExitAnimation());
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                rootLayout.clearAnimation();
+                for(View v: currentSnackList){
+                    rootLayout.removeView(v);
+                }
+                if(allSnacks.size()>0){
+                    List<View> previousSnacks = allSnacks.pop();
+
+                    currentSnackList = new ArrayList<View>();
+                    for(View v: previousSnacks){
+                        v.setAnimation(getEntryAnimation());
+                        addToView(v);
+                    }
+                }
+
+            }
+        }, OUT_ANIMATION_DURATION);
+    }
+
+    private void addToView(View v) {
+        rootLayout.addView(v, 0);
+        currentSnackList.add(v);
+    }
+
+    private void updateAllSnackArray() {
+        Log.e(LOG_TAG, "Adding currentSnackList of size - " + currentSnackList.size());
+        allSnacks.push(currentSnackList);
+    }
+
+    private CharSequence getBulletSpanMessage(String[] subMessageArray) {
         CharSequence subMessage = "";
         for(String subMessageItem: subMessageArray){
 
@@ -305,11 +391,6 @@ public class SnackBar {
             subMessage = TextUtils.concat(subMessage, spannableString);
         }
         return subMessage;
-    }
-
-    private void addToView(View v) {
-        rootLayout.addView(v, 0);
-        currentSnacks.add(v);
     }
 
     private int getSnackIcon(MessageType messageType) {
@@ -336,6 +417,10 @@ public class SnackBar {
             case ACCOUNT_STATEMENT:
                 snackIcon = R.drawable.account_statement;
                 break;
+            case NO_PHOTO:
+                snackIcon = 0;
+
+                break;
             default:
                 snackIcon = R.drawable.question;
                 break;
@@ -343,22 +428,31 @@ public class SnackBar {
         return snackIcon;
     }
 
+    private void setSnackIcon(MessageType messageType, ImageView mSnackIcon) {
+        int icon = getSnackIcon(messageType);
+        if(icon!=0){
+            mSnackIcon.setImageResource(getSnackIcon(messageType));
+        } else {
+            mSnackIcon.setVisibility(View.GONE);
+        }
+    }
+
     public void onBackPressedHandler() {
         if(rootLayout.getChildCount()>0){
-            removeAllSnacks();
-            currentSnacks.clear();
+            removeAndClearAllSnacks();
         } else {
             activity.finish();
         }
     }
 
-    public void removeAllSnacks() {
+    public void removeAndClearAllSnacks() {
         rootLayout.startAnimation(getExitAnimation());
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 rootLayout.clearAnimation();
                 rootLayout.removeAllViews();
-                currentSnacks.clear();
+                currentSnackList.clear();
+                allSnacks.clear();
             }
         }, OUT_ANIMATION_DURATION);
     }
@@ -371,13 +465,15 @@ public class SnackBar {
         MESSAGE,
         CHEQUE,
         ACCOUNT_STATEMENT,
+        NO_PHOTO,
         PASS_BOOK
     }
 
     public enum SnackBarType {
         SINGLELINE_INFO,
         SINGLELINE_ACTION,
-        SINGLELINE_OPTION,
+        SINGLELINE_FOOTER,
+        MULTILINE_OPTION,
         MULTILINE_INFO,
         LARGE_CONTAINER
     }
@@ -438,7 +534,7 @@ public class SnackBar {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
             if (event2.getY() > event1.getY()) {
-                removeAllSnacks();
+                removeAndClearAllSnacks();
             }
             return true;
         }

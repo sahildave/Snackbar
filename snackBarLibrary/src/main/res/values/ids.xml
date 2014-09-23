@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <item name="snackListContainer" type="id" />
     <item name="snackContainer" type="id" />
     <item name="snackCard" type="id" />
     <item name="snackMessage" type="id" />
@@ -9,8 +9,11 @@
     <item name="snackPositiveButton" type="id" />
     <item name="snackNegativeButton" type="id" />
     <item name="snackRadio" type="id" />
+    <item name="snackRadioGroup" type="id" />
     <item name="snackMultiLineList" type="id"/>
     <item name="snackLoading" type="id" />
     <item name="snackWebview" type="id" />
     <item name="snackPlaceholder" type="id"/>
+    <item name="snackBackButton" type="id" />
+    <item name="snackMoreHelp" type="id" />
 </resources>

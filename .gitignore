@@ -26,3 +26,6 @@ proguard/
 #IntelliJ
 .idea/*
 *.iml
+
+#Project Files
+screens/

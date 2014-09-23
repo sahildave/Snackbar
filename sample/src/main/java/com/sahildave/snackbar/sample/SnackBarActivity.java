@@ -18,8 +18,9 @@ package com.sahildave.snackbar.sample;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.Toast;
 import com.sahildave.snackbar.SnackBar;
+import com.sahildave.snackbar.SnackBar.MessageType;
+import com.sahildave.snackbar.SnackBar.SnackBarType;
 
 
 public class SnackBarActivity extends ActionBarActivity implements SnackBar.SnackBarListener {
@@ -39,33 +40,36 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
     //Single Option - showSingleLineOption
     //Multi Info - showMultiLineInfo
 
+
+    //Single Line - message, submessage, type, type
+    //Multi Line - message, submessage[], type, type
+
     public void addCall(View v){
-        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addEmail(View v){
-        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addMap(View v){
-        mSnackBar.showSingleLineInfo("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addInfo(View v){
-        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addAll(View v){
-        mSnackBar.showSingleLineInfo("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
-        mSnackBar.showSingleLineInfo("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
-        mSnackBar.showSingleLineInfo("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
-        mSnackBar.showSingleLineInfo("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Call Customer Support at:", "18001234567", SnackBar.MessageType.PHONE, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Email Customer Support at:", "support@hdfcbank.com", SnackBar.MessageType.EMAIL, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("Nearest Bank Branch at:", "goo.gl/sample", SnackBar.MessageType.MAP, SnackBar.SnackBarType.SINGLELINE_INFO);
+        mSnackBar.showSingleLineSnack("More info at:", "support.hdfcbank.com", SnackBar.MessageType.WEB, SnackBar.SnackBarType.SINGLELINE_INFO);
     }
 
     public void addAction(View v){
-        mSnackBar.showSingleLineAction("Seems like you have forgotten your customer ID. Would you like some help?",
-                "Yes",
-                "No",
+        mSnackBar.showSingleLineSnack("Seems like you have forgotten your customer ID. Would you like some help?",
+                "",
                 SnackBar.MessageType.MESSAGE,
                 SnackBar.SnackBarType.SINGLELINE_ACTION);
     }
@@ -73,7 +77,7 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
     public void addMultiLine(View v) {
 
         String[] messageArray = {"Back of this", "In box below", "Next to Signature"};
-        mSnackBar.showMultiLineInfo("Check Customer Id at:",messageArray, SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.MULTILINE_INFO);
+        mSnackBar.showMultiLineSnack("Check Customer Id at:", messageArray, SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.MULTILINE_INFO);
     }
 
     @Override
@@ -83,13 +87,22 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
 
     @Override
     public void positiveButtonClicked() {
-        mSnackBar.showSingleLineOption("Check Customer Id at", "Cheque Book", SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.SINGLELINE_OPTION);
-        mSnackBar.showSingleLineOption("Check Customer Id at", "Account Statement", SnackBar.MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.SINGLELINE_OPTION);
+
+        mSnackBar.showSingleLineSnack("Use above help to find your Customer ID", "", MessageType.NO_PHOTO, SnackBarType.SINGLELINE_FOOTER);
+
+        String[] chequeBookMessageArray = {"Back of this", "In box below", "Next to Signature"};
+        mSnackBar.showMultiLineSnack("Cheque Book:", chequeBookMessageArray, SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.MULTILINE_OPTION);
+
+        String[] accStatementBookMessageArray = {"Back of this", "In box below", "Next to Signature"};
+        mSnackBar.showMultiLineSnack("Account Statement:", accStatementBookMessageArray, MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.MULTILINE_OPTION);
+
+//        String[] customerIdMessageArray = {"Cheque Book", "Account Statement"};
+//        mSnackBar.showSingleLineOption("You can get your Customer ID in:", customerIdMessageArray, SnackBar.MessageType.NO_PHOTO, SnackBarType.MULTILINE_OPTION);
     }
 
     @Override
     public void negativeButtonClicked() {
-        mSnackBar.removeAllSnacks();
+        mSnackBar.removeAndClearAllSnacks();
     }
 
     @Override
@@ -99,5 +112,15 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
         String[] messageArray = {"Step 1", "Step 2", "Step 3"};
         String message = "Live Help";
         mSnackBar.setContainerLiveHelp(v, message, messageArray);
+    }
+
+    @Override
+    public void backButtonClicked() {
+        //Add anything necessary
+    }
+
+    @Override
+    public void moreHelpButtonClicked() {
+        addAll(null);
     }
 }

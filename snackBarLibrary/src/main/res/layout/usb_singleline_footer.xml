@@ -2,7 +2,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@id/snackCard"
         android:paddingBottom="0dp"
-        android:tag="Action"
+        android:tag="Footer"
         style="@style/SnackBar.Card">
 
 
@@ -12,7 +12,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginRight="24dp"
-            android:src="@drawable/question"/>
+            android:src="@drawable/message"/>
 
     <TextView
             android:id="@id/snackMessage"
@@ -42,7 +42,7 @@
             android:layout_below="@id/hzDivider">
 
         <Button
-                android:id="@id/snackPositiveButton"
+                android:id="@id/snackBackButton"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -53,10 +53,18 @@
                 android:drawablePadding="8dp"
                 android:fontFamily="sans-serif"
                 android:textColor="@android:color/black"
-                android:text="YES"/>
+                android:text="BACK"/>
+
+
+        <View
+                android:layout_width="0.5dp"
+                android:layout_margin="4dp"
+                android:layout_height="match_parent"
+                android:background="#222222"/>
+
 
         <Button
-                android:id="@id/snackNegativeButton"
+                android:id="@id/snackMoreHelp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -67,7 +75,7 @@
                 android:drawablePadding="8dp"
                 android:textColor="@android:color/black"
                 android:fontFamily="sans-serif"
-                android:text="NO"/>
+                android:text="MORE HELP"/>
 
 
     </LinearLayout>
