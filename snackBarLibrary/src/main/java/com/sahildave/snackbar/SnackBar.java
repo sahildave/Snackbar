@@ -46,7 +46,7 @@ public class SnackBar {
     private static final int IN_ANIMATION_DURATION = 150;
     private static final int OUT_ANIMATION_DURATION = 150;
     private static final String LOG_TAG = "SnackBar";
-    private final LinearLayout rootLayout;
+    private LinearLayout rootLayout;
     private final SnackBarListener snackBarListener;
     private final Stack<List<View>> allSnacks;
     private GestureDetectorCompat mGestureDetector;
@@ -56,6 +56,8 @@ public class SnackBar {
     private AnimationSet mInAnimationSet;
 
     private List<View> currentSnackList;
+    private ViewGroup snackbarContainer;
+    private ViewGroup activityContainer;
 
     public interface SnackBarListener{
 
@@ -63,23 +65,25 @@ public class SnackBar {
 
         void negativeButtonClicked();
 
-        void radioButtonClicked(MessageType messageType);
-
-        void backButtonClicked();
-
         void moreHelpButtonClicked();
     }
 
 
     public SnackBar(Activity activity) {
         this.activity = activity;
-        ViewGroup rootContainer = (ViewGroup) activity.findViewById(android.R.id.content);
-        ViewGroup snackbarListContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, rootContainer);
-        rootLayout = (LinearLayout) snackbarListContainer.findViewById(R.id.snackListContainer);
         snackBarListener = (SnackBarListener) activity;
-        currentSnackList = new ArrayList<View>();
 
+        currentSnackList = new ArrayList<View>();
         allSnacks = new Stack<List<View>>();
+
+    }
+
+    public void inflateSnackBarContainer() {
+        activityContainer = (ViewGroup) activity.findViewById(android.R.id.content);
+        snackbarContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, activityContainer);
+        rootLayout = (LinearLayout) snackbarContainer.findViewById(R.id.snackBarContainer);
+
+        Log.e(LOG_TAG, "Inflating - ");
 
         setupFlingToDismiss();
     }
@@ -95,10 +99,15 @@ public class SnackBar {
     }
 
     /*
-            SINGLELINES
-     */
+        SINGLELINES
+    */
 
     public void showSingleLineSnack(String message, String subMessage, MessageType messageType, SnackBarType snackBarType){
+
+        if(rootLayout == null){
+            inflateSnackBarContainer();
+        }
+
         if(snackBarType==SnackBarType.SINGLELINE_INFO){
             addSingleLineInfo(message, subMessage, messageType);
         } else if(snackBarType == SnackBarType.SINGLELINE_ACTION){
@@ -205,6 +214,11 @@ public class SnackBar {
     */
 
     public void showMultiLineSnack(String message, String[] subMessageArray, MessageType messageType, SnackBarType snackBarType){
+
+        if(rootLayout == null){
+            inflateSnackBarContainer();
+        }
+
         if(snackBarType==SnackBarType.MULTILINE_INFO){
             addMultiLineInfo(message, subMessageArray, messageType);
         } else if(snackBarType == SnackBarType.MULTILINE_OPTION){
@@ -232,7 +246,6 @@ public class SnackBar {
         mSnackIcon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(LOG_TAG, "Stack - "+allSnacks.toString());
             }
         });
 
@@ -265,6 +278,11 @@ public class SnackBar {
 
     //TODO: Change to ViewStub
     public View showLargeContainer (MessageType messageType, SnackBarType snackBarType, String url){
+
+        if(rootLayout == null){
+            inflateSnackBarContainer();
+        }
+
         if(snackBarType ==SnackBarType.LARGE_CONTAINER){
             return addLargeContainer(messageType, url);
         }
@@ -308,6 +326,11 @@ public class SnackBar {
      */
 
     private void showPreviousSnacks() {
+
+        if(rootLayout == null){
+            inflateSnackBarContainer();
+        }
+
         rootLayout.startAnimation(getExitAnimation());
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -346,7 +369,6 @@ public class SnackBar {
     }
 
     private void updateAllSnackArray() {
-        Log.e(LOG_TAG, "Adding currentSnackList of size - " + currentSnackList.size());
         allSnacks.push(currentSnackList);
     }
 
@@ -422,6 +444,12 @@ public class SnackBar {
                 rootLayout.removeAllViews();
                 currentSnackList.clear();
                 allSnacks.clear();
+
+                View snackBarParent = activityContainer.findViewById(R.id.snackBarContainerParent);
+                if(snackBarParent!=null && activityContainer!=null){
+                    activityContainer.removeView(snackBarParent);
+                }
+                rootLayout=null;
             }
         }, OUT_ANIMATION_DURATION);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="snackListContainer" type="id" />
+    <item name="snackBarContainer" type="id" />
     <item name="snackContainer" type="id" />
     <item name="snackCard" type="id" />
     <item name="snackMessage" type="id" />

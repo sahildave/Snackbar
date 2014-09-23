@@ -106,20 +106,6 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
     }
 
     @Override
-    public void radioButtonClicked(SnackBar.MessageType messageType) {
-        View v = mSnackBar.showLargeContainer(SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.LARGE_CONTAINER, "http://www.hdfcbank.com");
-
-        String[] messageArray = {"Step 1", "Step 2", "Step 3"};
-        String message = "Live Help";
-        mSnackBar.setContainerLiveHelp(v, message, messageArray);
-    }
-
-    @Override
-    public void backButtonClicked() {
-        //Add anything necessary
-    }
-
-    @Override
     public void moreHelpButtonClicked() {
         addAll(null);
     }
