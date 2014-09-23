@@ -118,14 +118,7 @@ public class SnackBar {
         mSnackSubMsgView.setText(subMessage);
         setSnackIcon(messageType, mSnackIcon);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24,12,24,12);
-        v.setLayoutParams(params);
         v.setTag(messageType);
-        v.setAnimation(getEntryAnimation());
         addToView(v);
     }
 
@@ -139,14 +132,7 @@ public class SnackBar {
         mSnackMsgView.setText(message);
         setSnackIcon(messageType, mSnackIcon);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24, 12, 24, 12);
-        v.setLayoutParams(params);
-        v.setAnimation(getEntryAnimation());
-//        v.setTag("Password"); //TODO: Add a tagging system
+        v.setTag(messageType);
         addToView(v);
 
         mSnackPositiveButton.setOnClickListener(new View.OnClickListener() {
@@ -184,14 +170,6 @@ public class SnackBar {
 
         mSnackMsgView.setText(message);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24, 12, 24, 12);
-        v.setLayoutParams(params);
-        v.setAnimation(getEntryAnimation());
-//        v.setTag("Password"); //TODO: Add a tagging system
         addToView(v);
 
         mSnackMoreHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -258,14 +236,7 @@ public class SnackBar {
             }
         });
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24,12,24,12);
-        v.setLayoutParams(params);
         v.setTag(messageType);
-        v.setAnimation(getEntryAnimation());
         addToView(v);
 
     }
@@ -284,14 +255,7 @@ public class SnackBar {
         CharSequence subMessage = getBulletSpanMessage(subMessageArray);
         mSnackSubMsgView.setText(subMessage.subSequence(0, subMessage.length()-1)); //to remove extra new line char
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24,12,24,12);
-        v.setLayoutParams(params);
         v.setTag(messageType);
-        v.setAnimation(getEntryAnimation());
         addToView(v);
     }
 
@@ -323,13 +287,7 @@ public class SnackBar {
 
         webView.loadUrl(inputUrl);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        params.setMargins(24, 64, 24, 12);
-        v.setLayoutParams(params);
-        v.setAnimation(getEntryAnimation());
+        v.setTag(messageType);
         addToView(v);
 
         return v;
@@ -372,6 +330,17 @@ public class SnackBar {
     }
 
     private void addToView(View v) {
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(24,12,24,12);
+        v.setLayoutParams(params);
+
+        v.setAnimation(getEntryAnimation());
+
         rootLayout.addView(v, 0);
         currentSnackList.add(v);
     }
