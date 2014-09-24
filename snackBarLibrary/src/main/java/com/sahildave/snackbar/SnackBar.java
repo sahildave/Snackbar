@@ -78,7 +78,7 @@ public class SnackBar {
 
     }
 
-    public void inflateSnackBarContainer() {
+    private void inflateSnackBarContainer() {
         activityContainer = (ViewGroup) activity.findViewById(android.R.id.content);
         snackbarContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.snackbar_container, activityContainer);
         rootLayout = (LinearLayout) snackbarContainer.findViewById(R.id.snackBarContainer);
@@ -179,7 +179,17 @@ public class SnackBar {
 
         mSnackMsgView.setText(message);
 
-        addToView(v);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(12,6,12,0);
+        v.setLayoutParams(params);
+
+        v.setAnimation(getEntryAnimation());
+
+        rootLayout.addView(v, 0);
+        currentSnackList.add(v);
 
         mSnackMoreHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,13 +231,13 @@ public class SnackBar {
 
         if(snackBarType==SnackBarType.MULTILINE_INFO){
             addMultiLineInfo(message, subMessageArray, messageType);
-        } else if(snackBarType == SnackBarType.MULTILINE_OPTION){
+        } else if(snackBarType == SnackBarType.MULTILINE_ACTION){
             addMultiLineOption(message, subMessageArray, messageType);
         }
     }
 
     private void addMultiLineOption(String message, String[] subMessageArray, MessageType messageType) {
-        final View v = activity.getLayoutInflater().inflate(R.layout.usb_multiline_option, null);
+        final View v = activity.getLayoutInflater().inflate(R.layout.usb_multiline_action, null);
         TextView mSnackMsgView = (TextView) v.findViewById(R.id.snackMessage);
         TextView mSnackSubMsgView = (TextView) v.findViewById(R.id.snackSubMessage);
         Button mSnackIcon = (Button) v.findViewById(R.id.snackIcon);
@@ -277,7 +287,7 @@ public class SnackBar {
      */
 
     //TODO: Change to ViewStub
-    public View showLargeContainer (MessageType messageType, SnackBarType snackBarType, String url){
+        public View showContainerSnack(MessageType messageType, SnackBarType snackBarType, String url){
 
         if(rootLayout == null){
             inflateSnackBarContainer();
@@ -359,7 +369,7 @@ public class SnackBar {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(24,12,24,12);
+        params.setMargins(12,6,12,6);
         v.setLayoutParams(params);
 
         v.setAnimation(getEntryAnimation());
@@ -429,7 +439,7 @@ public class SnackBar {
     }
 
     public void onBackPressedHandler() {
-        if(rootLayout.getChildCount()>0){
+        if(rootLayout!=null && rootLayout.getChildCount()>0){
             removeAndClearAllSnacks();
         } else {
             activity.finish();
@@ -470,7 +480,7 @@ public class SnackBar {
         SINGLELINE_INFO,
         SINGLELINE_ACTION,
         SINGLELINE_FOOTER,
-        MULTILINE_OPTION,
+        MULTILINE_ACTION,
         MULTILINE_INFO,
         LARGE_CONTAINER
     }

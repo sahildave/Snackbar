@@ -3,6 +3,7 @@
         android:id="@id/snackCard"
         android:orientation="horizontal"
         android:tag="Option"
+        android:paddingRight="12dp"
         style="@style/SnackBar.Card">
 
 
@@ -10,6 +11,7 @@
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content">
         <TextView
                 android:id="@id/snackMessage"
@@ -18,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
         <TextView
                 android:id="@id/snackSubMessage"
@@ -26,25 +28,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:textColor="#999999"
-                android:textSize="12sp"/>
+                android:textColor="#777777"
+                android:textSize="14sp"/>
 
     </LinearLayout>
 
     <View
             android:id="@+id/snackDivider"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/vertical_divider"
             android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"/>
+            style="@style/SnackBar.Divider.Vertical"/>
 
     <Button
             android:id="@id/snackIcon"
             android:text="Show\nMore"
             android:clickable="true"
             android:gravity="center"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="@color/blue_pallete"
             android:layout_width="48dp"
             android:layout_height="wrap_content"

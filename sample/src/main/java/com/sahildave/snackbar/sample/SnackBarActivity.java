@@ -91,13 +91,13 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
         mSnackBar.showSingleLineSnack("Use above help to find your Customer ID", "", MessageType.NO_PHOTO, SnackBarType.SINGLELINE_FOOTER);
 
         String[] chequeBookMessageArray = {"Back of this", "In box below", "Next to Signature"};
-        mSnackBar.showMultiLineSnack("Cheque Book:", chequeBookMessageArray, SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.MULTILINE_OPTION);
+        mSnackBar.showMultiLineSnack("Cheque Book:", chequeBookMessageArray, SnackBar.MessageType.CHEQUE, SnackBar.SnackBarType.MULTILINE_ACTION);
 
         String[] accStatementBookMessageArray = {"Back of this", "In box below", "Next to Signature"};
-        mSnackBar.showMultiLineSnack("Account Statement:", accStatementBookMessageArray, MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.MULTILINE_OPTION);
+        mSnackBar.showMultiLineSnack("Account Statement:", accStatementBookMessageArray, MessageType.ACCOUNT_STATEMENT, SnackBar.SnackBarType.MULTILINE_ACTION);
 
 //        String[] customerIdMessageArray = {"Cheque Book", "Account Statement"};
-//        mSnackBar.showSingleLineOption("You can get your Customer ID in:", customerIdMessageArray, SnackBar.MessageType.NO_PHOTO, SnackBarType.MULTILINE_OPTION);
+//        mSnackBar.showSingleLineOption("You can get your Customer ID in:", customerIdMessageArray, SnackBar.MessageType.NO_PHOTO, SnackBarType.MULTILINE_ACTION);
     }
 
     @Override
@@ -108,5 +108,9 @@ public class SnackBarActivity extends ActionBarActivity implements SnackBar.Snac
     @Override
     public void moreHelpButtonClicked() {
         addAll(null);
+    }
+
+    public void addFooter(View view) {
+        positiveButtonClicked();
     }
 }

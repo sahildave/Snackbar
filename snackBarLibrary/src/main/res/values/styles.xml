@@ -20,8 +20,8 @@
         <item name="android:layout_margin">16dp</item>
         <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingRight">24dp</item>
-        <item name="android:paddingTop">18dp</item>
-        <item name="android:paddingBottom">18dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">4dp</item>
     </style>
 
 
@@ -50,6 +50,22 @@
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">#fff</item>
+    </style>
+
+    <style name="SnackBar.Divider">
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="SnackBar.Divider.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/horizontal_divider</item>
+    </style>
+
+    <style name="SnackBar.Divider.Vertical">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/vertical_divider</item>
     </style>
 
 </resources>

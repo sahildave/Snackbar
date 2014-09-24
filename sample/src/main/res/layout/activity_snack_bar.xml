@@ -92,6 +92,13 @@
                 android:text="on Cheque book"
                 android:id="@+id/multilineInfo"
                 android:onClick="addMultiLine" />
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Footer"
+                android:id="@+id/footer"
+                android:onClick="addFooter" />
     </LinearLayout>
 
 
